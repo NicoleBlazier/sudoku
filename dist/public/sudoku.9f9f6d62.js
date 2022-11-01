@@ -117,79 +117,198 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"sudoku.js":[function(require,module,exports) {
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+var newGrid = function newGrid(size) {
+  var arr = new Array(size);
+
+  for (var i = 0; i < size; i++) {
+    arr[i] = new Array(size);
   }
 
-  return bundleURL;
-}
+  for (var i = 0; i < Math.pow(size, 2); i++) {
+    arr[Math.floor(i / size)][i % size] = CONSTANT.UNASSIGNED;
+  }
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+  return arr;
+  console.log(arr);
+}; // check for duplicate numbers in a col
 
-    if (matches) {
-      return getBaseURL(matches[0]);
+
+var isColSafe = function isColSafe(grid, col, value) {
+  for (var row = 0; row < CONSTANT.GRID_SIZE; row++) {
+    if (grid[row][col] === value) return false;
+  }
+
+  return true;
+}; // check for duplicate numbers in a row
+
+
+var isRowSafe = function isRowSafe(grid, row, value) {
+  for (var col = 0; col < CONSTANT.GRID_SIZE; col++) {
+    if (grid[row][col] === value) return false;
+  }
+
+  return true;
+}; //check if duplicate numbers in 3x3
+
+
+var is3x3Safe = function is3x3Safe(grid, box_row, box_col, value) {
+  for (var row = 0; row < CONSTANT.BOX_SIZE; row++) {
+    for (var col = 0; col < CONSTANT.BOX_SIZE; col++) {
+      if (grid[row + box_row][col + box_col] === value) return false;
     }
   }
 
-  return '/';
-}
+  return true;
+}; // check in row, col, and 3x3 box
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)?\/[^/]+(?:\?.*)?$/, '$1') + '/';
-}
 
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
+var isSafe = function isSafe(grid, row, col, value) {
+  return isColSafe(grid, row, value) && isRowSafe(grid, row, value) && is3x3Safe(grid, row - row % 3, col - col % 3, value) && value !== CONSTANT.UNASSIGNED;
+}; // find unassigned cell
 
-function updateLink(link) {
-  var newLink = link.cloneNode();
 
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
+var findUnassignedPos = function findUnassignedPos(grid, pos) {
+  for (var row = 0; row < CONSTANT.GRID_SIZE; row++) {
+    for (var col = 0; col < CONSTANT.GRID_SIZE; col++) {
+      if (grid[row + box_row][col + box_col] === CONSTANT.UNASSIGNED) {
+        pos.row = row;
+        pos.col = col;
+        return true;
       }
+
+      ;
+    }
+  }
+
+  return false;
+}; // shuffle Arr
+
+
+var shuffleArray = function shuffleArray(arr) {
+  var curr_index = arr.length;
+
+  while (curr_index !== 0) {
+    var rand_index = Math.floor(Math.random() * curr_index);
+    curr_index -= 1;
+    var temp = arr[curr_index];
+    arr[curr_index] = arr[rand_index];
+    arr[curr_index] = temp;
+  }
+
+  return arr;
+};
+
+var isFullGrid = function isFullGrid(grid) {
+  return grid.every(function (row, i) {
+    return row.every(function (row, i) {
+      return value !== CONSTANT.UNASSIGNED;
+    });
+  });
+};
+
+var sudokuCreate = function sudokuCreate(grid) {
+  var unassigned_pos = {
+    row: -1,
+    col: -1
+  };
+  if (!findUnassignedPos(grid, unassigned_pos)) return true;
+  var number_list = shuffleArray(_toConsumableArray(CONSTANT.NUMBERS));
+  var row = unassigned_pos.row;
+  var col = unassigned_pos.col;
+  number_list.forEach(function (num, i) {
+    if (isSafe(grid, row, col, num)) {
+      grid[row][col] = num;
+
+      if (isFullGrid(grid)) {
+        return true;
+      } else {
+        if (sudokuCreate(grid)) {
+          return true;
+        }
+      }
+
+      grid[row][col] = CONSTANT.UNASSIGNED;
+    }
+  });
+  return isFullGrid(grid);
+};
+
+var sudokuCheck = function sudokuCheck(grid) {
+  var unassigned_pos = {
+    row: -1,
+    col: -1
+  };
+  if (!findUnassignedPos(grid, unassigned_pos)) return true;
+  grid.forEach(function (row, i) {
+    row.forEach(function (num, j) {
+      if (isSafe(grid, i, j, num)) {
+        if (isFullGrid(grid)) {
+          return true;
+        } else {
+          if (sudokuCreate(grid)) {
+            return true;
+          }
+        }
+      }
+    });
+  });
+  return isFullGrid(grid);
+};
+
+var rand = function rand() {
+  return Math.floor(Math.random() * CONSTANT.GRID_SIZE);
+};
+
+var removeCells = function removeCells(grid, level) {
+  var res = _toConsumableArray(grid);
+
+  var attemps = level;
+
+  while (attemps > 0) {
+    var row = rand();
+    var col = rand();
+
+    while (res[row][col] === 0) {
+      row = rand();
+      col = rand();
     }
 
-    cssTimeout = null;
-  }, 50);
-}
+    res[row][col] = CONSTANT.UNASSIGNED;
+    attemps--;
+  }
 
-module.exports = reloadCSS;
-},{"./bundle-url":"../../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"style.css":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
+  return res;
+}; // generate sudoku base on level
 
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+var sudokuGen = function sudokuGen(level) {
+  var sudoku = newGrid(CONSTANT.GRID_SIZE);
+  var check = sudokuCreate(sudoku);
+
+  if (check) {
+    var question = removeCells(sudoku, level);
+    return {
+      original: sudoku,
+      question: question
+    };
+  }
+
+  return undefined;
+};
+},{}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -217,7 +336,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50597" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63204" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -393,5 +512,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/style.e308ff8e.js.map
+},{}]},{},["../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","sudoku.js"], null)
+//# sourceMappingURL=/sudoku.9f9f6d62.js.map
