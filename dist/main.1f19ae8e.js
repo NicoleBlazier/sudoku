@@ -192,6 +192,14 @@ var getPlayerName = function getPlayerName() {
 var showTime = function showTime(seconds) {
   return new Date(seconds * 1000).toISOString().substr(11, 8);
 };
+window.onload = function () {
+  clearNewGameValues();
+};
+function clearNewGameValues() {
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-name').value = '';
+}
 var clearSudoku = function clearSudoku() {
   for (var i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
     cells[i].innerHTML = '';
@@ -461,6 +469,7 @@ document.querySelector('#btn-resume').addEventListener('click', function () {
 });
 document.querySelector('#btn-new-game').addEventListener('click', function () {
   returnStartScreen();
+  clearNewGameValues();
 });
 document.querySelector('#btn-new-game-2').addEventListener('click', function () {
   console.log('object');
@@ -884,7 +893,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50849" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60715" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

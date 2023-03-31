@@ -78,6 +78,17 @@ const getPlayerName = () => localStorage.getItem('player_name');
 
 const showTime = (seconds) => new Date(seconds * 1000).toISOString().substr(11, 8);
 
+window.onload = function() {
+  clearNewGameValues();
+  }
+
+function clearNewGameValues() {
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-name').value = '';
+}
+
+
 const clearSudoku = () => {
     for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
         cells[i].innerHTML = '';
@@ -310,6 +321,8 @@ const initCellsEvent = () => {
     })
 }
 
+
+
 const startGame = () => {
     start_screen.classList.remove('active');
     game_screen.classList.add('active');
@@ -384,6 +397,7 @@ document.querySelector('#btn-resume').addEventListener('click', () => {
 
 document.querySelector('#btn-new-game').addEventListener('click', () => {
     returnStartScreen();
+    clearNewGameValues();
 });
 
 document.querySelector('#btn-new-game-2').addEventListener('click', () => {

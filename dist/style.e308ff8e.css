@@ -1,21 +1,22 @@
 :root {
-    --bg-main: #E5CEF6;
+    --bg-main: #B3CCE8;
     --bg-body: #fff;
-    --color-txt: #170B3B;
+    --color-txt: #000;
     --filled-color: #000;
-    --filled-bg: #CEA3EE;
+    --filled-bg: #B3B8E8;
 
     --white: #fff;
-    --purple: #9505E3;
+    --purple: #372fb4;
+
     --red: #170B3B;
     --black: #000;
 
     --nav-size: 65px;
-    --sudoku-cell-size: 50px;
+    --sudoku-cell-size: 45px;
 
     --border-radius: 10px;
 
-    --space-y: 20px;
+    --space-y: 15px;
 
     --gap: 5px;
 
@@ -23,16 +24,16 @@
     --font-size-lg: 2rem;
     --font-size-xl: 3rem;
 
-    --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+    --box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     --text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .dark {
-    --bg-main: #E5CEF6;
-    --bg-body: #341948;
+    --bg-main: #fff;
+    --bg-body: #B3B8E8;
     --color-txt: #170B3B;
     --filled-color: #170B3B;
-    --filled-bg: #CEA3EE;
+    --filled-bg: #B3CCE8;
     --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     --text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
@@ -52,6 +53,7 @@
 body {
   font-family: "Pacifico", cursive;
   background-color: var(--bg-body);
+  height: auto;
   overflow-x: hidden;
   user-select: none;
   box-shadow: var(--box-shadow);
@@ -149,7 +151,6 @@ header {
   width: 100%;
   height: 100%;
   transform: translateX(-100%);
-  /* transition: transform 0.3s ease-in-out; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -199,6 +200,10 @@ header {
   text-shadow: var(--text-shadow);
 }
 
+.input-name::placeholder {
+  color: #170B3B;
+}
+
 .btn {
   height: 80px;
   width: 280px;
@@ -242,10 +247,10 @@ header {
 
 .main-game {
   display: flex;
-  height: 100%;
+  /* height: 100%; */
   flex-direction: column;
   justify-content: space-between;
-  padding: 30px 0;
+  padding: 20px 0 0 0;
   transform: translateX(100%);
   /* transition: transform 0.3s ease-in-out; */
 }
@@ -291,7 +296,7 @@ header {
 }
 
 .dark .main-grid-cell.hover {
-  border: 3px solid #9940DC;
+  border: 3px solid var(--purple);
 }
 
 .main-grid-cell.err {
